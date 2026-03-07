@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fox's Slimes · original folders + A–Z headers </title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: #000;
+      font-family: 'Courier New', monospace;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px;
+      position: relative;
+      min-height: 100vh;
+
+      background-image: url('fall.gif');   /* your image file */
+      background-size: cover;                    /* covers entire screen */
+      background-position: center;                /* centers the image */
+      background-repeat: no-repeat;                /* no tiling */
+      background-attachment: fixed;   /* ← this locks the image in place */
+      /* optional overlay to keep text readable */
+      background-color: rgba(255, 179, 0, 0.112);          /* dark overlay if image is light */
+      background-blend-mode: overlay;              /* blends color with image */
+
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.4);   /* dark overlay */
+      z-index: -1;
+    }
+
+    h1 {
+      font-size: 2.5em;
+      margin-bottom: 5px;
+      font-weight: bold;
+      text-align: center;
+      color: #fff;
+      text-shadow: none;
+    }
+
+    h2 {
+      font-size: 1.2em;
+      margin-bottom: 30px;
+      font-weight: bold;
+      text-align: center;
+      color: #ddd;
+    }
+
+    /* ----- alphabetical sidebar (A–Z wheel) ----- */
+    .alphabet-sidebar {
+      position: fixed;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      background: rgba(0, 0, 0, 0.9);
+      padding: 12px 6px;
+      border: 2px solid #fff;
+      border-radius: 30px;
+      z-index: 100;
+      max-height: 90vh;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: #fff #000;
+    }
+
+    .alphabet-sidebar::-webkit-scrollbar {
+      width: 6px;
+    }
+    .alphabet-sidebar::-webkit-scrollbar-track {
+      background: #000;
+    }
+    .alphabet-sidebar::-webkit-scrollbar-thumb {
+      background: #fff;
+      border-radius: 10px;
+    }
+
+    .alphabet-sidebar a {
+      color: #fff;
+      text-decoration: none;
+      font-size: 1.2rem;
+      font-weight: bold;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid #fff;
+      border-radius: 50%;
+      transition: 0.2s;
+      background: #000;
+    }
+
+    .alphabet-sidebar a:hover {
+      background: #fff;
+      color: #000;
+      border-color: #fff;
+      transform: scale(1.1);
+    }
+
+    /* main content – leave space for sidebar */
+    .main-content {
+      width: 100%;
+      max-width: 1300px;
+      margin-left: 60px;   /* avoid overlap with fixed sidebar */
+      padding: 0 10px;
+    }
+
+    /* ----- letter headers: A ----- with dashed line ----- */
+    .letter-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 50px 0 25px 0;
+      scroll-margin-top: 20px;
+      font-size: 2.8rem;
+      font-weight: bold;
+      color: #fff;
+      text-shadow: none;
+      font-family: inherit;
+    }
+
+    .letter-header .dash-line {
+      flex: 1;
+      border-bottom: 3px dashed #fff;
+      height: 1px;
+      margin-top: 8px;
+    }
+
+    /* container for folders under each letter */
+    .folders-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: flex-start;
+      margin-bottom: 40px;
+    }
+
+    /* ----- ORIGINAL folder styles (red inner square, white hover) ----- */
+    .folder {
+      background-color: #000;
+      border: 2px solid #fff;
+      padding: 20px;
+      width: 250px;               /* original width */
+      min-height: 150px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: box-shadow 0.3s, transform 0.3s, border-color 0.3s;
+      border-radius: 4px;
+      position: relative;
+    }
+
+    .folder::before {
+      content: '';
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      right: 10px;
+      bottom: 10px;
+      /*background-color: #474747ce;   /* orange‑red square */
+      background-color: rgb(61, 35, 17);
+      opacity: 0.5;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .folder:hover {
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.8);
+      transform: translateY(-3px);
+      border-color: #fff;
+    }
+
+    .folder:hover::before {
+      opacity: 0.4;
+    }
+
+    .folder-title {
+      font-size: 1.3em;
+      text-align: center;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-grow: 1;
+      position: relative;
+      z-index: 1;
+    }
+
+    .folder-contents {
+      margin-top: 10px;
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+      width: 100%;
+      font-size: 15px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .folder-link {
+      display: block;
+      padding: 10px;
+      border: 2px solid #fff;
+      text-decoration: none;
+      color: #fff;
+      transition: all 0.3s;
+      border-radius: 2px;
+      text-align: center;
+      word-break: break-word;
+    }
+
+    .folder-link:hover {
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+      background-color: #111;
+    }
+
+    .folder.active .folder-contents {
+      display: flex;
+      flex-grow: 0;
+      margin-bottom: 10px;
+    }
+
+    /* ----- flat list of all links (alphabetical) ----- */
+    .all-links-section {
+      margin-top: 80px;
+      border-top: 3px dashed #fff;
+      padding-top: 30px;
+    }
+
+    .all-links-section h2 {
+      font-size: 2rem;
+      color: #fff;
+      margin-bottom: 30px;
+      text-shadow: none;
+      font-family: 'Courier New', monospace;
+      text-align: left;
+      border-bottom: 2px solid #fff;
+      padding-bottom: 8px;
+    }
+
+    .all-links-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .all-links-list li {
+      border: 1px solid #444;
+      padding: 8px 15px;
+      background: #0a0a0a;
+      border-radius: 4px;
+    }
+
+    .all-links-list a {
+      color: #fff;
+      text-decoration: none;
+      font-size: 1.1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .all-links-list a:hover {
+      color: #ccc;
+      text-decoration: underline;
+    }
+
+    .link-meta {
+      color: #aaa;
+      font-size: 0.85rem;
+      font-family: 'Courier New', monospace;
+      background: #1a1a1a;
+      padding: 2px 8px;
+      border-radius: 16px;
+    }
+
+    .note {
+        background: #161204d7;
+        /*border-left: 4px solid #ffc107;*/
+        padding: 0.75rem 1rem;
+        margin-bottom: 2rem;
+        border-radius: 4px;
+      }
+
+    /* responsive */
+    @media (max-width: 900px) {
+      .alphabet-sidebar {
+        left: 5px;
+        padding: 8px 4px;
+      }
+      .alphabet-sidebar a {
+        width: 28px;
+        height: 28px;
+        font-size: 1rem;
+      }
+      .main-content {
+        margin-left: 45px;
+      }
+    }
+
+    @media (max-width: 700px) {
+      .folders-container {
+        justify-content: center;
+      }
+      .folder {
+        width: 100%;
+        max-width: 350px;
+      }
+      .alphabet-sidebar {
+        flex-direction: row;
+        left: 50%;
+        transform: translateX(-50%);
+        top: auto;
+        bottom: 10px;
+        width: 90%;
+        justify-content: center;
+        flex-wrap: wrap;
+        border-radius: 40px;
+        padding: 10px;
+      }
+      .main-content {
+        margin-left: 0;
+        margin-bottom: 100px;
+      }
+
+    }
+  </style>
+</head>
+<body>
+
+  <!-- This is your visible note -->
+  <div class="note">
+    <strong>Note:</strong> I did not record any of these.
+  </div>
+
+  <!-- alphabetical sidebar (A–Z) -->
+  <div class="alphabet-sidebar" id="alphabetSidebar"></div>
+
+  <div class="main-content">
+    <h1>Noxitsune's Slimes & Plays</h1>
+    <h2>(alphabetical order · click folder to expand)</h2>
+
+    <!-- folders will be dynamically injected here, grouped by letter with new headers -->
+    <div id="dynamicFolders"></div>
+
+    <!-- separate alphabetical list of every single link -->
+    <div class="all-links-section">
+      <h2>ALL LINKS · A to Z</h2>
+      <ul class="all-links-list" id="allLinksList"></ul>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      // ---------- data model : all musicals with their links ----------
+      const musicals = [
+        /// A
+        {
+          title: "Avenue Q",
+          links: [
+            { text: "Avenue Q", url: "https://www.youtube.com/watch?v=vWEskfjMBCg" }
+          ]
+        },
+        {
+          title: "A Little Life",
+          links: [
+            { text: "A Little Life", url: "https://drive.google.com/file/d/1ip5jtqTHLhwH4-Mq7rqYD0t0pMkuRAGx/view?pli=1" }
+          ]
+        },
+        {
+          title: "Alice By Heart",
+          links: [
+            { text: "Alice By Heart Internet Archive", url: "https://archive.org/details/alice-by-heart-slime" }
+          ]
+        },
+
+        /// B
+        {
+          title: "Beetlejuice",
+          links: [
+            { text: "Beetlejuice (Alex Brightman) 2022", url: "https://drive.google.com/file/d/1emm-ZxBcxyPvYHayDZsU-HoWXric7YlI/view?pli=1" },
+            { text: "Beetlejuice (All of the versions on Internet Archive)", url: "https://docs.google.com/document/d/15gFjkbOMyJvMVjD4cItQ3louMeAwb78m3KsaltjaO3Y/edit?tab=t.0" },
+            /*
+            { text: "Beetlejuice (Elizabeth Teeter as Lydia)", url: "https://archive.org/details/bugdrink-ft-elizabeth-teeter" },
+            { text: "Beetlejuice (Presley Ryan As Lydia)", url: "https://archive.org/details/prezley-ryan-hd" },
+            { text: "Beetlejuice (Closing Night)", url: "https://archive.org/details/bugdrink-closing-night" },
+            { text: "Beetlejuice (US Tour)", url: "https://archive.org/details/BugDrink-US-Tour-Slime-Tutorial-HD" },
+            { text: "Beetlejuice (April 2022)", url: "https://archive.org/details/BugDrink-US-Tour-Slime-Tutorial-HD" },
+            { text: "Beetlejuice (With Spanish Subtitles)", url: "https://archive.org/details/bugdrink-sub-espanol" },
+            { text: "Beetlejuice (Original Broadway Cast (Sophia Anne Caruso as Lydia):)", url: "https://archive.org/details/beetlejuice-mega-obc-cut" },
+            { text: "Beetlejuice (Beetlejuice (Original Broadway Cast)", url: "https://archive.org/details/beetlejuice-the-musical_202408" },
+            { text: "Beetlejuice (Beetlejuice (Original Broadway Cast)", url: "https://archive.org/details/20210430_20210430_1953" },
+            { text: "Beetlejuice (Beetlejuice (Original Broadway Cast)", url: "https://archive.org/details/whybeetejuiceshouldstayonbroadway" },
+            { text: "Beetlejuice (Beetlejuice (Original Broadway Cast)", url: "https://archive.org/details/bug-drink-blspliced" },
+            */
+            ]
+        },
+        {
+          title: "Be More Chill",
+          links: [
+            { text: "Be More Chill", url: "https://www.youtube.com/watch?v=v43KZdArXbs" },
+            { text: "Be More Chill (Broadway)", url: "https://www.youtube.com/watch?v=YFxogfuOaPM" }
+          ]
+        },
+        {
+          title: "Bonnie & Clyde",
+          links: [
+            { text: "Bonnie & Clyde", url: "https://drive.google.com/file/d/12bwrvQ9aglxnItKYhn1ymLfjYaFdMDWU/view" }
+          ]
+        },
+        {
+          title: "Boop",
+          links: [
+            { text: "Boop (Chicago)", url: "https://drive.google.com/file/d/1moKazsUoM62vWQf8lVyLL4eyv7qWD-At/view" }
+          ]
+        },
+        {
+          title: "Bye Bye Birdie (2009)",
+          links: [
+            { text: "Part 1", url: "https://www.google.com/search?hl=en-GB&hl=en-US&q=bye%20bye%20birdie%20slime%20tutorial&docid=Hd50lbiJohBy0M&ibp=video&shndl=41&shmd=H4sIAAAAAAAA_-Oay8ilkVSZqgDGmUUpmakKRgYGlgrFOZm5qQolpSX5RZmJOQoahvommlIZGSUlBcVW-vqpeclFlQUlqSm6JUl5BnrpxSWJJZnJesn5ufqZuYnpqcX2hbZAGStHvxRL9-TgolxHI_-ciCA3b13zDH_jzKRic4ugMosA76icME_nJPMIY_OySn8_n4hKs1Rjn0C1Yi2GijVMDYwrGAFtsz5xoAAAAA&shmds=v1_AdeF8KhdNq6N-Y3bAjImguJ5x8TpEeegh8_ruZkE8xLRo-OWMA&shem=sdl1p&kgs=45a70b4d7d19c70d#fpstate=ive&vld=cid:f552664c,vid:Gr7qWN7MrkI,st:0" },
+            { text: "Part 2", url: "https://www.youtube.com/watch?v=CHoWLUhpBLo" },
+            { text: "Part 3", url: "https://www.youtube.com/watch?v=f4kJfJMpkmo" },
+            { text: "Part 4", url: "https://www.youtube.com/watch?v=yogJndnFHfU" }
+          ]
+        },
+        {
+          title: "Back to The Future",
+          links: [
+            { text: "Back to The Future (Broadway - with JJ Niemann)", url: "https://www.youtube.com/watch?v=fglMx36UUC8" }
+          ]
+        },
+        {
+          title: "Beauty and the Beast",
+          links: [
+            { text: "Beauty and the Beast (Broadway)", url: "https://www.youtube.com/watch?v=iyq5VI2486I" }
+          ]
+        },
+        /// C
+        {
+          title: "Cabaret",
+          links: [
+            { text: "Cabaret 1993", url: "https://www.youtube.com/watch?v=IOs82ubFyFQ" },
+            { text: "Cabaret 1993 4K", url: "https://www.youtube.com/watch?v=IJJECQO6ypQ&t=462s" },
+            { text: "Cabaret 1993 Internet Archive", url: "https://archive.org/details/cabaret-1993-mendes-production-feat-alan-cumming-full-show" },
+            { text: "Cabaret 2015", url: "https://drive.google.com/file/d/1nsWulQByct4Fm_pn0SprqxE5A_7nzBEn/view" },
+            { text: "Cabaret 2025", url: "https://archive.org/details/cabaret-2025-04-10-orville-peck-eva-nobelzada" }
+
+          ]
+        },
+        {
+          title: "Carrie",
+          links: [
+            { text: "Carrie", url: "https://www.youtube.com/watch?v=lCSp6HU6d_YQ" }
+          ]
+        },
+        {
+          title: "Cats",
+          links: [
+            { text: "Cats (2016 Broadway revival)", url: "https://www.youtube.com/watch?v=WVP3DTur1Aw" }
+          ]
+        },
+        {
+          title: "Charlie and the Chocolate Factory",
+          links: [
+            { text: "Charlie and the Chocolate Factory", url: "https://www.youtube.com/watch?v=kwADC6-OvXw" }
+          ]
+        },
+        {
+          title: "Chicago",
+          links: [
+            { text: "Chicago (US Tour 2005)", url: "https://www.youtube.com/watch?v=IaPdeQCGurE" }
+          ]
+        },
+        {
+          title: "Come From Away",
+          links: [
+            { text: "Come From Away", url: "https://www.youtube.com/watch?v=cmOWOqs6Oxw" }
+          ]
+        },
+        /// D
+        {
+          title: "Dear Evan Hansen",
+          links: [
+            { text: "Dear Evan Hansen", url: "https://www.youtube.com/watch?v=Rw9cumHU52s" },
+            { text: "Dear Evan Hansen NL", url: "https://drive.google.com/file/d/1pk3IZ7BcadaNUi6IhU_0FMj_m28qbeSv/view" },
+            { text: "Dear Evan Hansen (Jordan Fisher)", url: "https://drive.google.com/file/d/1lVP8O6vwR_1F-HLcFUeZVjQZyz-imh4Q/view" }
+          ]
+        },
+        {
+          title: "Death Becomes Her",
+          links: [
+            { text: "Death Becomes Her", url: "https://drive.google.com/file/d/1cMIzklUJX2K9ukC7FbS_VXO47xBduqWG/view" }
+          ]
+        },
+        /// E
+        {
+          title: "Elf",
+          links: [
+            { text: "ELF the Musical", url: "https://archive.org/details/buddys-holiday-slime-tutorial" }
+          ]
+        },
+        {
+          title: "Evita",
+          links: [
+            { text: "Evita", url: "https://www.youtube.com/watch?v=iE0ixzkl1kA" }
+          ]
+        },
+        /// F
+        {
+          title: "Falsettos",
+          links: [
+            { text: "Falsettos", url: "https://www.youtube.com/watch?v=qPrJPpMwdio" }
+          ]
+        },
+        {
+          title: "Finding Neverland",
+          links: [
+            { text: "Finding Neverland", url: "https://www.youtube.com/watch?v=-Gq1h5gYjGU" }
+          ]
+        },
+        {
+          title: "Floyd Collins",
+          links: [
+            { text: "Floyd Collins (Revival with Jeremy Jordan)", url: "https://drive.google.com/file/d/1Y4A6eXkNOSnqBdFjxkAYJN7xNHrsna4T/view" }
+          ]
+        },
+        {
+          title: "Funny Girl",
+          links: [
+            { text: "Funny Girl (Beanie Feldstein)", url: "https://www.youtube.com/watch?v=4Mk4J_nultw" }
+          ]
+        },
+        /// G
+        {
+          title: "Grease",
+          links: [
+            { text: "Grease", url: "https://www.youtube.com/watch?v=m7DQv1dmvhk" }
+          ]
+        },
+        /// H
+        {
+          title: "Hadestown",
+          links: [
+            { text: "Hadestown (J.W) Dropbox", url: "https://www.dropbox.com/scl/fi/nk2gnvozt76q81exmcj5v/JW-Hadestown-Full.mp4?rlkey=8zc9bf6kh419ia544ftua4p3h&e=1&st=laapkwd3&dl=0" },
+            { text: "Hadestown (J.W) mp4", url: "https://player.odycdn.com/v6/streams/6d6b0708a491cc7fa440c1bb13de113f8ab6c0f9/28cdee.mp4" },
+            { text: "Hadestown (J.W) Internet Archive", url: "https://archive.org/details/28cdee" },
+            { text: "Hadestown (J.W) Slime", url: "https://www.youtube.com/watch?v=kN_FwBFDEqk&t=3536s" },
+            { text: "Hadestown (Amsterdam)", url: "https://mega.nz/folder/Hs5gFZyS#KHA1WrVvlwxHio6vJZQwcQ" },
+            { text: "Hadestown (Jordan & Mai's)", url: "https://drive.google.com/file/d/1RbOzaD7OkzXnxfHvm1FALjdRAmBV1H4T/view" },
+            { text: "Hadestown - OBC ", url: "https://www.youtube.com/watch?v=_AKkwxP5bK0" },
+            { text: "Hadestown (OBC)", url: "https://www.youtube.com/watch?v=12owz5JPt9U" },
+            { text: "Hadestown (Jordan Fisher & Lola Tung, Feb. 2024)", url: "https://www.youtube.com/watch?v=AzV8Bs3_wag" }
+          ]
+        },
+        {
+          title: "Hamilton",
+          links: [
+            { text: "Hamilton (Broadway Proshot)", url: "https://hdtodayz.to/watch-movie/watch-hamilton-hd-62097.2767351" },
+          ]
+        },
+        {
+          title: "Head over Heels",
+          links: [
+            { text: "Head over Heels", url: "https://www.youtube.com/watch?v=bi90umivYB0" },
+          ]
+        },
+        {
+          title: "Heathers",
+          links: [
+            { text: "Heathers (1989 Movie)", url: "https://www.youtube.com/watch?v=07cV1tziX_g" },
+            { text: "Heathers (off Broadway", url: "https://www.youtube.com/watch?v=vn8uvsc5rbM" },
+            { text: "Heathers (2022 West End Proshot)", url: "https://drive.google.com/file/d/1VPv7UyACABl9oa7rQX7aN_sFQV54Xzlg/view" },
+            { text: "Heathers (Jamie Muscato 4 parts:)" },
+            { text: "Part 1", url: "https://youtu.be/piBvnzdMtJU?si=KtIrPc1Sz-FkNAR6" },
+            { text: "Part 2", url: "https://youtu.be/OMp7OsApOyQ?si=6zadLn3DBGaxl3lV" },
+            { text: "Part 3", url: "https://youtu.be/wfpSyrGBRmI?si=sUcAZsf19BkiQNI5" },
+            { text: "Part 4", url: "https://youtu.be/iB5vFw3hWi4?si=BYnY3278WzKB2Kyp" }
+          ]
+        },
+        /// I
+        {
+          title: "In the Heights",
+          links: [
+            { text: "In the Heights (Broadway)", url: "https://www.youtube.com/watch?v=Kj4QuCqRXug" },
+            { text: "In The Heights (Movie Musical)", url: "https://hdtodayz.to/watch-movie/watch-in-the-heights-hd-70232.4808440" },
+
+          ]
+        },
+        {
+          title: "Into The Woods",
+          links: [
+            { text: "Into The Woods", url: "https://www.youtube.com/watch?v=kqCsQCsinK4" }
+          ]
+        },
+        /// J
+        {
+          title: "Juliet",
+          links: [
+            { text: "Juliet (West End)", url: "https://www.youtube.com/watch?v=r_9zwrV9giY" },
+          ]
+        },
+        {
+          title: "Jesus Christ Superstar",
+          links: [
+            { text: "Jesus Christ Superstar", url: "https://www.youtube.com/watch?v=61ZkYqsGnQw" },
+          ]
+        },
+        {
+          title: "John Proctor is the Villian",
+          links: [
+            { text: "John Proctor is the Villian", url: "https://drive.google.com/file/d/165Qy1N7pdI6-E5ywFhe1KoW3P3M6eIA8/view" },
+          ]
+        },
+        {
+          title: "Just in Time",
+          links: [
+            { text: "Just in Time", url: "https://mega.nz/file/t9JBGCRQ#L3082knhjZYafPDxzJNmkGN0ZSdZiNaObgS_Ndi-dtw" },
+          ]
+        },
+        /// K
+        /// L
+        {
+          title: "Legally Blonde",
+          links: [
+            { text: "Legally Blonde (MTV Proshot)", url: "https://www.youtube.com/watch?v=RiX-EJA8n4w" },
+          ]
+        },
+        {
+          title: "Legoland",
+          links: [
+            { text: "Legoland", url: "https://www.youtube.com/watch?v=5FmwvN16lvU" },
+          ]
+        },
+        {
+          title: "Lempicka",
+          links: [
+            { text: "Lempicka", url: "https://www.youtube.com/watch?v=ya-3hCE36fw" },
+          ]
+        },
+        {
+          title: "Les Miserables",
+          links: [
+            { text: "Les Miserables", url: "https://www.youtube.com/watch?v=l8eQEz9TbvE" },
+          ]
+        },
+        {
+          title: "Little Shop of Horrors",
+          links: [
+            { text: "Little Shop Of Horrers (Broadway- With Milo Manheim)", url: "https://www.youtube.com/watch?v=Z2iUtrbhhW4" },
+            { text: "Little Shop Of Horrors (Broadway- With Jeremy Jordan)", url: "https://www.youtube.com/watch?v=9dtpwkT0Z7U" },
+          ]
+        },
+        /// M
+        {
+          title: "Maybe Happy Ending",
+          links: [
+            { text: "Maybe Happy Ending", url: "https://drive.google.com/file/d/1s4fQiviUVjpKMjZqSmAJZE4AzNuE1I49/view" },
+          ]
+        },
+        {
+          title: "Miss Saigon",
+          links: [
+            { text: "Miss Saigon (Proshot)", url: "https://drive.google.com/file/d/1OWYgr7BJvqvkNclKKuySsW0b1gMBwuTz/view" },
+          ]
+        },
+        {
+          title: "Moulin Rogue",
+          links: [
+            { text: "Moulin Rogue", url: "https://archive.org/details/moulinrogue" },
+          ]
+        },
+        {
+          title: "Music Man",
+          links: [
+            { text: "Music Man", url: "https://www.youtube.com/watch?v=ovTHVWxQDK8" },
+          ]
+        },
+        /// N
+        {
+          title: "Next to Normal",
+          links: [
+            { text: "Next to Normal 2024", url: "https://www.youtube.com/watch?v=qAiRGGL3p2o" },
+            { text: "Next to Normal (Slime) 2024", url: "https://mega.nz/file/nzQWxKqI#3waV826TrxXvUTf2OrLD4XpaVLFsTP6GGlRqWQ0Khvo" },
+            //{ text: "Next to Normal 2024 DEAD", url: "https://www.youtube.com/watch?v=UZjRLDVgKJE" },
+            { text: "Next to Normal UNCENSORED ", url: "https://drive.google.com/file/d/11N72DGuxhQ5AzKr2h463hwZjy4Wvf9ZF/view" },
+            { text: "Next to Normal CENSORED ", url: "https://ga.pbs-video.pbs.org/videos/great-performances/857ea995-0305-4a70-9bca-7f80346cc25e/2000476274/hd-16x9-mezzanine-1080p/gper5112-mp4-720p-3000k.mp4" },          
+          ]
+        },
+        {
+          title: "Nerdy Prudes Must Die",
+          links: [
+            { text: "Nerdy Prudes Must Die", url: "https://www.youtube.com/watch?v=PG3RDdyD_GQ" },
+          ]
+        },
+        
+        /// O
+        /// P
+        {
+          title: "Percy Jackson and the Lightning Thief",
+          links: [
+            { text: "Percy Jackson and the Lightning Thief", url: "https://www.youtube.com/watch?v=2s3xAjow2s8" },
+          ]
+        },
+        {
+          title: "Phantom Of The Opera",
+          links: [
+            { text: "Phantom Of The Opera", url: "https://archive.org/details/the-phantom-of-the-opera_202105" }
+          ]
+        },
+        /// Q
+        /// R
+        {
+          title: "Ride The Cyclone",
+          links: [
+            { text: "Ride The Cyclone 2016", url: "https://www.youtube.com/watch?v=t3R0f-HsueQ" }
+          ]
+        },
+        {
+          title: "Romeo & Juliet",
+          links: [
+            { text: "Romeo & Juliet (Broadway - With Orlando Bloom and Condola Rashad)", url: "https://www.youtube.com/watch?v=EdAZbKQqO-U" },
+          ]
+        },
+        /// S
+        /*{
+          title: "Shrek",
+          links: [
+            { text: "Shrek (Proshot)", url: "https://archive.org/details/shrek-the-musical-2013-1080p.x-264" }
+          ]
+        },*/
+        {
+          title: "Sister Ac",
+          links: [
+            { text: "Sister Act (Broadway)", url: "https://www.youtube.com/watch?v=eidFj2fw98s" }
+          ]
+        },
+        {
+          title: "Spring Awakening",
+          links: [
+            { text: "Spring Awakening 2024 (J.Wolfe)", url: "https://mega.nz/file/iEtlRKYA#k93RXMsvw4hpTcySAtJH4m31QF8-rgfk08tPReExbwo" },
+            { text: "Spring Awakening 2008", url: "https://www.youtube.com/watch?v=znRj4Cf2jxE" }
+          ]
+        },
+        {
+          title: "Starlight Express",
+          links: [
+            { text: "Starlight Express (2024 London)", url: "https://www.youtube.com/watch?v=3u9KypJqamA" },          
+          ]
+        },
+        {
+          title: "Sweeney Todd",
+          links: [
+            { text: "Sweeney Todd 1979", url: "https://www.youtube.com/watch?v=ISp5sjaSnl0" },          
+          ]
+        },
+        /// T
+        {
+          title: "The Unlikely Pilgrimage of Harold Fry",
+          links: [
+            { text: "Harold Fry 2025 (J.Wolf)", url: "https://drive.google.com/file/d/1DvL1FeSLRVR7n-NldUpAB1eJ5qroIA_9/view" }
+          ]
+        },
+        {
+          title: "The Great Comet",
+          links: [
+            { text: "The Great Comet", url: "https://www.youtube.com/watch?v=S4KzgD0kUA8" },
+            { text: "The Great Comet", url: "https://drive.google.com/file/d/1my_jkP9V3oOfQLUWLRQ0_AUNTvw-OlZu/view" }
+          ]
+        },
+        {
+          title: "The Connector",
+          links: [
+            { text: "The Connector", url: "https://www.youtube.com/watch?v=P0-MBMGfvdI" },
+          ]
+        },
+        {
+          title: "The Great Gatsby",
+          links: [
+            { text: "The Great Gatsby (Broadway OBC)", url: "https://www.youtube.com/watch?v=E7VzA25yWXw" },
+            { text: "The Great Gatsby (Slightly better quality in 2 parts:)" },
+            { text: "Part 1", url: "https://www.youtube.com/watch?v=Qy1kS8SHggo" },
+            { text: "Part 2", url: "https://www.youtube.com/watch?v=7tYLecP0ViY" },
+
+
+          ]
+        },
+        {
+          title: "The Hunchback of Notre Dame",
+          links: [
+            { text: "The Hunchback of Notre Dame (Papermill Playhouse)", url: "https://archive.org/details/broadway-2.0/20200911_The+Hunchback+of+Notre+Dame+_++Papermill+Playhouse+Closing+Night_7CMieHSgBh4_%5B1920x1080%5D.mkv" },
+          ]
+        },
+        {
+          title: "The Last Five Years",
+          links: [
+            { text: "The Last Five Years (2005)", url: "https://www.youtube.com/watch?v=XjXnHm0xay4" },
+          ]
+        },
+        {
+          title: "The Sound Of Music",
+          links: [
+            { text: "The Sound Of Music Live! (With Carrie Underwood)", url: "https://archive.org/details/the-sound-of-music-live" },
+          ]
+        },
+        {
+          title: "The Nutcracker",
+          links: [
+            { text: "The Nutcracker", url: "https://www.youtube.com/watch?v=OYAkmkM_4TA" },
+          ]
+        },
+        {
+          title: "The Outsiders musical",
+          links: [
+            { text: "The Outsiders musical", url: "https://drive.google.com/file/d/1UIK1mEl0iudq_7hHWsvBlXob8QYZiifo/view" },
+          ]
+        },
+        {
+          title: "Tuck Everlasting (Atlanta)",
+          links: [
+            { text: "Part 1", url: "https://www.youtube.com/watch?v=sg2WgMjTViw" },
+            { text: "Part 2", url: "https://www.youtube.com/watch?v=spdabo5vgd8" },
+            
+          ]
+        },
+        /// U
+        /// V
+        /// W
+        {
+          title: "W.Shakespeare (David Tennant)",
+          links: [
+            { text: "Hamlet 2009", url: "https://mega.nz/folder/PcBDxbwS#xZtKoYkAROq3FoEv2gYaCg" },
+            { text: "Macbeth 2025", url: "https://mega.nz/folder/PcBDxbwS#xZtKoYkAROq3FoEv2gYaCg" },
+            { text: "Richard II 2013", url: "https://mega.nz/folder/PcBDxbwS#xZtKoYkAROq3FoEv2gYaCg" },
+            { text: "Much Do About Nothing 2011", url: "https://mega.nz/folder/PcBDxbwS#xZtKoYkAROq3FoEv2gYaCg" }
+          ]
+        },
+        {
+          title: "W.Shakespeare",
+          links: [
+            { text: "Macbeth clip (A.Cumming) 2013", url: "https://drive.google.com/file/d/0B8QDBDKOAD01Ul9QRG1SZnkyd0k/view?resourcekey=0-lFwDHlmyu71VnxLqcLB5fw" }
+          ]
+        },
+        {
+          title: "Waitress",
+          links: [
+            { text: "Waitress (Jeremy Jordan)", url: "https://www.youtube.com/watch?v=3a3MhuDpwGc" },
+            { text: "Waitress (With Coleen Ballinger)", url: "https://archive.org/details/waitresscoleenballinger" }
+          ]
+        },
+        /*{
+          title: "West Side Story",
+          links: [
+            { text: "West Side Story (1961 Movie)", url: "https://hdtodayz.to/watch-movie/watch-west-side-story-hd-17545.5301244" },
+            { text: "West Side Story (2021 Movie)", url: "https://hdtodayz.to/watch-movie/watch-west-side-story-hd-44430.5596291" }
+          ]
+        },*/
+        {
+          title: "Wicked",
+          links: [
+            { text: "Wicked (with Ryan McCartan)", url: "https://www.youtube.com/watch?v=xrK1QFuoDRM" }          
+          ]
+        },
+        /// X
+        /// Y
+        {
+          title: "Broadway 2.0 Youtube Channel",
+          links: [
+            { text: "Broadway 2.0 Youtube Channel: Internet Archive", url: "https://archive.org/details/broadway-2.0/20200626_Aladdin+_+Pre-Broadway+Toronto_zPXfyUUvp1c_%5B854x478%5D.mkv" }
+          ]
+        },
+        /// Z
+        
+      ];
+
+      // ---------- sort musicals alphabetically by title ----------
+      musicals.sort((a, b) => a.title.localeCompare(b.title));
+
+      // ---------- group by first letter (A–Z, # for others) ----------
+      const groups = {};
+      musicals.forEach(m => {
+        let firstChar = m.title.trim().charAt(0).toUpperCase();
+        if (!/[A-Z]/.test(firstChar)) firstChar = '#';
+        if (!groups[firstChar]) groups[firstChar] = [];
+        groups[firstChar].push(m);
+      });
+
+      // ---------- render folders with new letter headers (A -----) ----------
+      const container = document.getElementById('dynamicFolders');
+      container.innerHTML = '';
+
+      const sortedLetters = Object.keys(groups).sort((a, b) => {
+        if (a === '#') return 1;
+        if (b === '#') return -1;
+        return a.localeCompare(b);
+      });
+
+      // store for sidebar
+      const letterIds = [];
+
+      sortedLetters.forEach(letter => {
+        const headerId = `letter-${letter}`;
+        letterIds.push({ letter, id: headerId });
+
+        // create header div with letter and dashed line
+        const headerDiv = document.createElement('div');
+        headerDiv.className = 'letter-header';
+        headerDiv.id = headerId;
+
+        const letterSpan = document.createElement('span');
+        letterSpan.textContent = letter;
+        headerDiv.appendChild(letterSpan);
+
+        const dashSpan = document.createElement('span');
+        dashSpan.className = 'dash-line';
+        headerDiv.appendChild(dashSpan);
+
+        container.appendChild(headerDiv);
+
+        // create a container for folders under this letter
+        const folderGroup = document.createElement('div');
+        folderGroup.className = 'folders-container';
+
+        groups[letter].forEach(musical => {
+          const folderDiv = document.createElement('div');
+          folderDiv.className = 'folder';
+          folderDiv.setAttribute('onclick', 'toggleFolder(this)');
+
+          const titleDiv = document.createElement('div');
+          titleDiv.className = 'folder-title';
+          titleDiv.innerHTML = `<b>${musical.title}</b>`;
+          folderDiv.appendChild(titleDiv);
+
+          const contentsDiv = document.createElement('div');
+          contentsDiv.className = 'folder-contents';
+
+          musical.links.forEach(link => {
+            const a = document.createElement('a');
+            a.href = link.url;
+            a.target = '_blank';
+            a.className = 'folder-link';
+            a.textContent = link.text;
+            contentsDiv.appendChild(a);
+          });
+
+          folderDiv.appendChild(contentsDiv);
+          folderGroup.appendChild(folderDiv);
+        });
+
+        container.appendChild(folderGroup);
+      });
+
+      // ---------- build alphabetical sidebar (only letters that exist) ----------
+      const sidebar = document.getElementById('alphabetSidebar');
+      sidebar.innerHTML = '';
+      const allLetters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+      allLetters.forEach(letter => {
+        if (groups[letter]) {
+          const a = document.createElement('a');
+          a.href = `#letter-${letter}`;
+          a.textContent = letter;
+          sidebar.appendChild(a);
+        }
+      });
+      if (groups['#']) {
+        const a = document.createElement('a');
+        a.href = '#letter-#';
+        a.textContent = '#';
+        sidebar.appendChild(a);
+      }
+
+      // ---------- build flat alphabetical list of ALL links ----------
+      const allLinks = [];
+      musicals.forEach(musical => {
+        musical.links.forEach(link => {
+          allLinks.push({
+            text: link.text,
+            url: link.url,
+            musical: musical.title
+          });
+        });
+      });
+
+      allLinks.sort((a, b) => a.text.localeCompare(b.text));
+
+      const listEl = document.getElementById('allLinksList');
+      listEl.innerHTML = '';
+      allLinks.forEach(item => {
+        const li = document.createElement('li');
+        const a = document.createElement('a');
+        a.href = item.url;
+        a.target = '_blank';
+        a.innerHTML = `${item.text} <span class="link-meta">${item.musical}</span>`;
+        li.appendChild(a);
+        listEl.appendChild(li);
+      });
+
+      // ---------- toggle function ----------
+      window.toggleFolder = function(folderElement) {
+        folderElement.classList.toggle('active');
+      };
+
+      // smooth scroll for sidebar
+      document.querySelectorAll('.alphabet-sidebar a').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+          e.preventDefault();
+          const targetId = this.getAttribute('href').substring(1);
+          const targetEl = document.getElementById(targetId);
+          if (targetEl) {
+            targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        });
+      });
+    })();
+  </script>
+</body>
+</html>
